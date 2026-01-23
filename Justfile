@@ -13,7 +13,6 @@ new module_name:
     @test ! -d "{{module_name}}" || (echo "Error: Directory '{{module_name}}' already exists." && exit 1)
     @echo "Creating new module: {{module_name}}"
     cp -r 00-report-template "{{module_name}}"
-    mkdir -p "{{module_name}}/code"
     just rename {{module_name}}
     @echo "Module {{module_name}} initialized."
 
@@ -41,3 +40,22 @@ build module_name:
 # Example: just zip 01-introduction
 zip module_name:
     ./scripts/submitzip.sh "{{module_name}}"
+
+
+# Clean auxiliary files for a module
+# Usage: just clean <module-name>
+# Example: just clean 01-introduction
+clean module_name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{module_name}}/report"
+    latexmk -bibtex -output-directory="{{OUTPUT_DIR}}" -auxdir="{{AUX_DIR}}" -c
+
+# Clean everything including PDFs for a module
+# Usage: just distclean <module-name>
+# Example: just distclean 01-introduction
+distclean module_name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{module_name}}/report"
+    latexmk -bibtex -output-directory="{{OUTPUT_DIR}}" -auxdir="{{AUX_DIR}}" -C

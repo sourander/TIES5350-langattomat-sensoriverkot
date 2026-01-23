@@ -193,7 +193,7 @@ FUNCTION {format.names}
 	    { ", " * t * }
 	    { t "others" =
 		{ ", et~al." * }
-		{ ", ja " * t * }
+		{ ", and " * t * }
 	      if$
 	    }
 	  if$
@@ -224,7 +224,7 @@ FUNCTION {format.innames}
 	      if$
 	      t "others" =
 		{ " et~al." * }
-		{ " ja " * t * }
+		{ " and " * t * }
 	      if$
 	    }
 	  if$
@@ -271,7 +271,7 @@ FUNCTION {format.ineditors}
 FUNCTION {format.title}
 { title empty$
     { "" }
-    { title "t" change.case$ }
+    { title }
   if$
 }
 
@@ -460,7 +460,7 @@ FUNCTION {format.chapter.pages}
 FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
-    { "Kirjassa " booktitle emphasize *
+    { "In " booktitle emphasize *
       editor empty$
 	'skip$
 	{ ", " * format.ineditors * }
@@ -499,7 +499,7 @@ FUNCTION {format.proc.date}
 FUNCTION {format.in.proc.date}
 { booktitle empty$
     { "" }
-    { "Julkaisusarjassa " booktitle format.proc.date * }
+    { "In " booktitle format.proc.date * }
   if$
 }
 
@@ -524,7 +524,7 @@ FUNCTION {format.thesis.type}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Tekninen raportti" }
+    { "Tech. Rep." }
     'type
   if$
   number empty$
@@ -568,7 +568,7 @@ FUNCTION {format.crossref.editor}
 FUNCTION {format.book.crossref}
 { volume empty$
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
-      "Kirjassa "
+      "In "
     }
     { "Vol.~" volume *
       " of " *
@@ -604,13 +604,13 @@ FUNCTION {format.incoll.inproc.crossref}
 	      crossref * warning$
 	      ""
 	    }
-	    { "Kirjassa {\em " booktitle * "\/}" * }
+	    { "In {\em " booktitle * "\/}" * }
 	  if$
 	}
 	{ "In " key * }
       if$
     }
-    { "Kirjassa " format.crossref.editor * }
+    { "In " format.crossref.editor * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -851,7 +851,7 @@ FUNCTION {techreport}
 { output.bibitem
   format.authors "author" output.check
   new.block
-  format.title "title" output.check
+  format.btitle "title" output.check
   new.block
   format.tr.number output.nonnull
   institution "institution" output.check
