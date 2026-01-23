@@ -1,0 +1,11 @@
+# LaTeX auxiliary files
+aux/
+
+# LaTeX build output
+build/
+
+# latexindent backup and log
+backup/
+
+# Zips in root dir
+*.zip

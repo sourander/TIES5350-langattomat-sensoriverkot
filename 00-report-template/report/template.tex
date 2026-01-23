@@ -1,0 +1,132 @@
+\documentclass[finnish,utf8,nonumbib,palatino]{kycReport}
+\usepackage{listings}
+\usepackage{svg}
+
+\usepackage[bookmarksopen,bookmarksnumbered]{hyperref}
+
+% ------------ Omat alkaa ------------
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+
+% Colors for TODO-list
+\usepackage{xcolor}
+\newcommand{\todo}{\textcolor{orange}{TODO }}
+\newcommand{\done}{\textcolor{green}{DONE }}
+\newcommand{\miss}{\textcolor{red}{MISS }}
+
+% For minted (pygment code syntax highlighting)
+\usepackage[outputdir=aux]{minted}
+
+% Minted background color
+\definecolor{LightGray}{gray}{0.95}
+
+% Potentially set some defaults, like
+\setminted{
+  % These two are inluded in my tex-code-minted-block snippet. tex
+  % frame=lines,
+  % linenos,               % Show line numbers
+  bgcolor=LightGray,
+  breaklines,            % Wrap long lines
+  autogobble,            % Automatically dedent leadings whitespace
+  fontsize=\footnotesize % Font size to footnotesize. Alternative e.g. \small.
+}
+% ------------ Omat loppuu ------------
+
+
+
+\title{
+    \textsl{REPLACE with Assignment Name}
+}
+
+\setauthor{Jani}{Sourander}
+\type{TIES536 Wireless Embedded InterNetworking (Sulautettu internet)}
+
+\begin{document}
+
+\mainmatter
+
+% --------------------------------------------------  %
+%                                                     %
+%                  Otsikko}                           %
+%                                                     %
+% --------------------------------------------------- %
+\chapter{Johdanto}
+
+\begin{itemize}
+	\item Provide a brief overview of the content of this course module.
+	\item Summarize the knowledge acquired from this course module.
+\end{itemize}
+
+\subsection*{Declaration of Using Generative Artificial Intelligence}
+No generative AI was used in the preparation of this assignment.
+
+
+% --------------------------------------------------  %
+%                                                     %
+%                  Otsikko                            %
+%                                                     %
+% --------------------------------------------------- %
+\chapter{Literature Assignments}
+
+
+% --------------------------------------------------  %
+%                                                     %
+%                  Programming                        %
+%                                                     %
+% --------------------------------------------------- %
+\chapter{Programming Assignments (if applicable)}
+
+
+
+% --------------------------------------------------  %
+%                                                     %
+%                  Feedback                           %
+%                                                     %
+% --------------------------------------------------- %
+\chapter{Lecture and Assignment Feedback}
+
+
+\noindent
+\textbf{Lecture Content:} What aspects of the lecture presentations provided did you find most helpful or clear? Were there any confusing topics you would like to see explained in more detail?
+
+\noindent
+\textbf{Vastaus:}
+
+\vspace{0.5\baselineskip} % ----
+
+\noindent
+\textbf{Assignments:} Were the assignment questions clear? Did they help you engage with the lecture material and encourage further research?
+
+\noindent
+\textbf{Vastaus:}
+
+\vspace{0.5\baselineskip} % ----
+
+\noindent
+\textbf{Time Spent:} Approximately how many hours did you spend completing this assignment (including research and writing)?
+
+\noindent
+\textbf{Vastaus:}
+
+\vspace{0.5\baselineskip} % ----
+
+\noindent
+\textbf{Overall Learning:} What are the key concepts or insights you will take away from this assignment?
+
+\noindent
+\textbf{Vastaus:}
+
+\vspace{0.5\baselineskip} % ----
+
+\noindent
+\textbf{Other Comments/Opinions:} Please share any other opinions, suggestions, or comments regarding the lectures or this assignment.
+
+\noindent
+\textbf{Vastaus:}
+
+
+\bibliography{kycReport}
+
+
+
+\end{document}
