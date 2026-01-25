@@ -59,3 +59,18 @@ distclean module_name:
     set -euo pipefail
     cd "{{module_name}}/report"
     latexmk -bibtex -output-directory="{{OUTPUT_DIR}}" -auxdir="{{AUX_DIR}}" -C
+
+# Open the generated PDF for a module
+# Usage: just open <module-name>
+# Example: just open 01-introduction
+open module_name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    NUMBER=$(echo "{{module_name}}" | grep -o '^[0-9]\+' || echo "x")
+    PDF_PATH="{{module_name}}/report/{{OUTPUT_DIR}}/{{COURSE_CODE}}-assignment-${NUMBER}-sourander.pdf"
+    if [ -f "$PDF_PATH" ]; then
+        xdg-open "$PDF_PATH" || open "$PDF_PATH"
+    else
+        echo "Error: PDF not found at $PDF_PATH"
+        exit 1
+    fi
