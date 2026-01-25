@@ -49,50 +49,46 @@
 \chapter{Johdanto}
 
 
-Tämä raportti on osa Langattomat sensoriverkot -kurssia. Tehtänantona on valita yksi Kandris et al. (2020) esittämistä luokituksista. Kuusi sovellusalueesta tässä työssä keskitytään erityisesti Flora \& Fauna -alueeseen, jossa sensoriverkkoja hyödynnetään kasvi- ja eläinympäristöjen seurannassa.
+Tämä raportti on osa Langattomat sensoriverkot -kurssia. Tehtänantona on valita yksi Kandris et al. (2020) esittämistä luokituksista. Kuusi sovellusalueesta tässä työssä keskitytään erityisesti ympäristö (engl. Environmental) -alueeseen, jossa sensoriverkkoja hyödynnetään maaperän, veden tai ilman seurannassa.
 
-Johdannon yhteydessä esitellään kaksi valittua tieteellistä artikkelia, jotka kuvaavat konkreettisia sovelluskohteita tällä alueella. Ensimmäisessä artikkelissa, \emph{An Internet of Things (IoT) Application on Volcano Monitoring} (Awadallah et al., 2019), kuvataan LoRa-teknologiaan perustuvan sensoriverkon käyttöä tulivuoren lämpötilan seurantaan. Toisessa artikkelissa, \emph{TreeVibes: Modern Tools for Global Monitoring of Trees for Borers} (Rigakis et al., 2021), tarkastellaan puiden sisäisten värähtelyjen mittaamista ja analysointia haitallisten hyönteisten, kuten sarvijäärien, havaitsemiseksi. Näiden lisäksi tarkastellaan myös ympäristön monitoroinnin turvallisuuteen liittyviä haasteita artikkelin \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} (Adu-Manu et al., 2022) pohjalta, joka toimii tukena sovellusartikkeleiden tarkastelulle.
+Raportissa tarkastellaan kahta tieteellistä artikkelia kurssin luentomateriaalien ja -videoiden rajaamien aiheiden kautta.. Ensimmäinen, \emph{An Internet of Things (IoT) Application on Volcano Monitoring} (Awadallah et al., 2019) \cite{volcano}, esittelee konkreettisen ympäristön monitorointisovelluksen, jossa LoRa-verkkoteknologiaa ja virtapihejä sensorisolmuja hyödynnetään tulivuoren maaperän lämpötilan seurannassa. Raportti tutustuu artikkeli kautta sen arkkitehtuuriin, laitteistoon, viestintäprotokolliin, energiatehokkuuden ja turvallisuuteen. Sovellus edustaa ympäristöluokan (Environmental) sensoriverkkoja ja auttaa ennustamaan tulivuorenpurkauksia.
 
-Tämän työn tavoitteena on antaa yleiskuva valittujen sovellusten toimintaperiaatteista sekä niiden hyödyntämistä teknologioista ja tuoda esiin keskeisiä haasteita, joita langattomien sensoriverkkojen käyttöönottoon liittyy ympäristön seurannassa. Työssä käsitellään artikkeleita kurssin luentovideoiden ja luentomateriaalien rajaamien aiheiden kautta.
+Toinen artikkeli, \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} (Adu-Manu et al., 2022) \cite{security}, toimii tausta-aineistona ja tarjoaa laajan katsauksen ympäristön monitorointiin liittyviin protokolliin ja tietoturvahaasteisiin. Tämä kirjallisuuskatsaus täydentää sovellusartikkelin tarkastelua tuomalla esiin turvallisuuteen liittyviä näkökulmia.
 
 \subsection*{Generatiivisen tekoälyn käyttö}
 
-Tekoälyä on käytetty tiedonhaun apuna. Suoritin sekä perinteistä Google Scholar että Gemini Deep Research tiedonhakua. Jälkimmäisessä käytetty kehote ja taulukkomuotoon parsimani tulokset löytyvät liitteistä (ks. Liite \ref{app:deep-research} ja Liite \ref{app:deep-research-results}). Tekoälyä on käytetty myös muotoilun apuna esimerkiksi kääntäessä minun omista muistiinpanoita Markdown-muotoisia taulukoita LaTeX-muotoon.
+Tekoälyä on käytetty tiedonhaun apuna. Suoritin sekä perinteistä Google Scholar että Gemini Deep Research tiedonhakua. Jälkimmäisessä käytetty kehote ja taulukkomuotoon parsimani tulokset löytyvät liitteistä (ks. Liite \ref{app:deep-research} ja Liite \ref{app:deep-research-results}). Tekoälyä on käytetty myös LaTeX-muotoilun apuna taulukoissa.
 
 
 % --------------------------------------------------  %
 %                                                     %
-%                  Flora & Fauna                      %
+%                 Volcano                             %
 %                                                     %
 % --------------------------------------------------- %
-\chapter{Flora & Fauna sovellukset}
+\chapter{Tulivuorenpurkauksen ennustaminen}
 
 
 % --------------------------------------------------  %
-%                Yleiskuvaus                          %
+%                Artikkelin valinta                   %
 % --------------------------------------------------- %
 \section{Artikkeleiden haku ja valinta}
 
-\todo Selitä lyhyesti, mitä etsin, miksi, ja miten valitsin kyseiset.
+Raporttia kirjoittaessa oli tärkeää löytää artikkeli (tai useampi), jossa kuvataan sovellusta eri arkkitehtuurin kerrosten näkökulmista. Tätä valintaa vaikeuttaa se, että kurssin aihe, langattomat sensoriverkot (\emph{engl. Wireless Sensor Networks, WSN}) on hyvin lähellä risteäviä aiheita kuten esineiden internetiä (\emph{engl. Internet of Things, IoT}), joten sopivaa työtä ei välttämättä tunnista otsikosta tai tiivistelmästä. Toinen vaikeuttava tekijä on, että kurssin moduulin katsantakulma on laaja, kattaen vaiheet mittauskerroksesta applikaatiokerrokseen asti. Tämä asettaa laajuusvaatimuksia löydetylle julkaisulle. Näiden haasteiden johdosta tiedonhaun prosessiksi valikoitui tapa, jossa ladataan kymmeniä PDF-julkaisua koneelle, ja nämä käydään silmäillen läpi, karsien ne pois, jotka eivät läpäise vaatimuksia. Haku suoritettiin sekä Google Deep Research että Google Scholar palveluita käyttäen ja hakuprosessi esitellään raportin liitteissä.
 
-Ensimmäinen valittu: Volcano \cite{volcano}
+Kuten liitteiden kehotteista on luettavissa, alkuperäinen aiherajaus oli \emph{Flora \& Fauna}. Julkaisuja karsiessa valtaosa tekoälyn ehdottamista julkaisuista karsiutui pois, koska niiden pääpaino oli selkeästi IoT:n tai koneoppimisen puolella. Pisimpään harkinnanalaisena pysyi TreeVibes-sensoriin liittyvät kaksi  julkaisua. Ne tunnetaan numeroilla 9 ja 9B liitteissä (ks.Liite \ref{app:deep-research-results}). Deep Resarchin tuottama ehdotus ei sisältänyt alkuperäistä TreeVibes-julkaisua, mutta julkaisu tunnusnumeroltaan 9 käytti kyseistä sensoria ja viittasi tähän työhön lähteissään. Artikkeleiden tarkempi silmäily valitettavasti todisti, että TreeVibes on pikemminkin IoT- kuin WSN-toteutus, joten julkaisut karsiutuivat pois. Tähän mennessä kaikki ladatut PDF-tiedostot olivat joutuneet hylkäyspinoon, paitsi väärää sovellusaluetta, eli ympäristöä, -- tarkemmin tulivuoria -- käsittelevä työ. Lopulta ei ollut muuta vaihtoehtoa kuin tehdä pivot: sovellusalueeksi valikoitui \emph{Environmental}.
 
-Toinen valittu: TreeVibes \cite{treevibes}, joka löytyi Deep Research -työn parsimisvaiheessa, ja liitteissä se tunnetaan tunnuksella 9B (ks.Liite \ref{app:deep-research-results}). Tekoäly ehdotus ei sisältänyt TreeVibes-julkaisua, mutta julkaisu tunnusnumeroltaan 9 käytti kyseistä sensoria ja viittasi tähän työhön lähteissään. Alkuperäinen artikkeli osoittautui enemmän tähän tehtävänantoon sopivaksi kuin datan analytiikkaa ja koneoppimista painottava jatkotutkimus.
+Näin sovellukseksi oli valikoitunut kirjoittajien Awadallah, Moure ja Torres-González julkaisu \emph{An Internet of Things (IoT) Application on Volcano Monitoring}. Julkaisu on Espanjan kansallisen maantieteellisen instituutin (IGN, esp. \emph{Instituto Geográfico Nacional}) Karariansaarten geofysiikan keskukselta (esp. \emph{Centro Geofísico de Canarias}). Myös tässä julkaisussa mainitaan IoT useita kertoja -- alkaen otsikosta. Luennoilla Ismo Hakala käsitteli tätä aihetta: termit Wireless Sensor Networks (WSN), Internet of Things (IoT) sekä Cyber-Physical Systems (CPS) ovat läheisesti toisiinsa liittyviä käsitteitä. Sopivalla Google Scholar -haulla (\texttt{"WSN"\ AND\ "IoT-enabled"}) löytyy vuoden 2020 jälkeen yli $13\,000$ tulosta. Kenties IoT nähdään tällöin IP-protokollaperheen tarjoamana toiminnallisuutena, jonka alemmalla kerroksella voi olla tai voi olla olematta kurssin määritelmän mukaisia WSN-laitteita. Käsitellyssä julkaisussa IoT-tasoa edustaa Raspberry Pi -gatewayltä alkava Internet-yhteys. Alemman mittaustason laitteet ovat kurssin määritelmän mukaisia WSN-mittalaitteita ja hyödyntävät kommunikaatioon LoRa-tekniikkaa. Näihin teknisiin seikkoihin tutustutaan myöhemmissä luvuissa.
 
-Kolmas valittu julkaisu on kyselytutkimus, joka käsittelee WSN-protokollien turvallisuutta, Scholarilla löytynyt lähde, joka tunnetaan liitteissä tunnusnumerolla 26(ks. Liite \ref{app:google-scholar-results}): \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} \cite{security}.
-
-IEEE-artikkeleihin eivät Google Scholarin linkit useimmiten toimineet, mutta pääsin niihin käsiksi Jyväskylän Yliopiston aineistohaun kautta. Aineistoa tunnusnumero 17 (ks.Liite \ref{app:deep-research-results}) en saanut jostain syystä ladattua laisinkaan. Sen sisältö on mielenkiintoinen, mutta pudotin sen pois, koska palautuksessa vaaditaan PDF-formaattia. Vain HTML-kokoteksti oli saatavilla.
+Valitun sovelluksen lisäksi raportin aineistoksi valikoitui toinen julkaisu, joka on kirjallisuuskatsaus (engl. review article), joka käsittelee WSN-protokollien turvallisuutta. Kyseinen Google Scholarilla löytynyt lähde, joka tunnetaan liitteissä tunnusnumerolla 26(ks. Liite \ref{app:google-scholar-results}), on otsikoltaan \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} \cite{security}. Tämä katsaus on mukana vertailukohtana ja tarjoamassa laajempaa pohjaa turvallisuusaiheen käsittelylle.
 
 % --------------------------------------------------  %
 %                Yleiskuvaus                          %
 % --------------------------------------------------- %
 \section{Sovellusartikkeleiden yleiskatsaus}
 
-\todo Kuvaa lyhyesti molempien sovellusten taustat: mitä ongelmaa ne ratkaisevat?
+\todo Kuvaa lyhyesti sovelluksen taustat: minkä ongelman se ratkaisee?
 
 \todo Artikkelissa A keskitytään... 
-
-\todo kun taas artikkelissa B lähestymistapa on...
 
 
 % --------------------------------------------------  %
@@ -101,6 +97,8 @@ IEEE-artikkeleihin eivät Google Scholarin linkit useimmiten toimineet, mutta p�
 \section{Toiminnallisuus ja teknologiat}
 
 \todo Tässä on tärkeää käyttää luennoilla opittua luokittelua (arkkitehtuuri, protokollat, teknologiat).
+
+\todo Yritä selvittää/päätellä QoS, elinaika, laajennettavuus, ylläpidettävyys, ohjelmoitavuus, tietoturvallisuus, energiankulutus, itseorganisoituvuus, verkonhallinta jne
 
 \todo Voit käyttää taulukkoa, jos haluat havainnollistaa eroja (esim. Artikkeli A käyttää LoRa-teknologiaa, Artikkeli B ZigBeetä).
 
@@ -111,6 +109,8 @@ IEEE-artikkeleihin eivät Google Scholarin linkit useimmiten toimineet, mutta p�
 % --------------------------------------------------- %
 \section{Analyysi ja vertailu}
 
+\todo Vertaile näkökulmasta: QoS, elinaika, laajennettavuus, ylläpidettävyys, ohjelmoitavuus, tietoturvallisuus, energiankulutus, itseorganisoituvuus, verkonhallinta jne
+
 \todo Arvioi, kuinka hyvin valitut toteutukset vastaavat niille asetettuja tavoitteita. Koska sinulla on kaksi artikkelia, voit analysoida, miksi toisessa on valittu erilainen arkkitehtuuri kuin toisessa.
 
 % --------------------------------------------------  %
@@ -119,6 +119,8 @@ IEEE-artikkeleihin eivät Google Scholarin linkit useimmiten toimineet, mutta p�
 %                                                     %
 % --------------------------------------------------- %
 \chapter{Yhteenveto}
+
+\todo Tähän sisältöä.
 
 \appendix
 
