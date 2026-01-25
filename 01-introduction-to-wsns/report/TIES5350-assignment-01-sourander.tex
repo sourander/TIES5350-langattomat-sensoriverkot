@@ -9,6 +9,9 @@
 % For minted (pygment code syntax highlighting)
 \usepackage[outputdir=aux]{minted}
 
+% For long tables that span multiple pages
+\usepackage{longtable}
+
 % Minted background color
 \definecolor{LightGray}{gray}{0.95}
 
@@ -45,20 +48,241 @@
 % --------------------------------------------------- %
 \chapter{Johdanto}
 
-\todo Koko homma kesken.
 
-\subsection*{Declaration of Using Generative Artificial Intelligence}
-No generative AI was used in the preparation of this assignment.
+Tämä raportti on osa Langattomat sensoriverkot -kurssia. Tehtänantona on valita yksi Kandris et al. (2020) esittämistä luokituksista. Kuusi sovellusalueesta tässä työssä keskitytään erityisesti Flora \& Fauna -alueeseen, jossa sensoriverkkoja hyödynnetään kasvi- ja eläinympäristöjen seurannassa.
+
+Johdannon yhteydessä esitellään kaksi valittua tieteellistä artikkelia, jotka kuvaavat konkreettisia sovelluskohteita tällä alueella. Ensimmäisessä artikkelissa, \emph{An Internet of Things (IoT) Application on Volcano Monitoring} (Awadallah et al., 2019), kuvataan LoRa-teknologiaan perustuvan sensoriverkon käyttöä tulivuoren lämpötilan seurantaan. Toisessa artikkelissa, \emph{TreeVibes: Modern Tools for Global Monitoring of Trees for Borers} (Rigakis et al., 2021), tarkastellaan puiden sisäisten värähtelyjen mittaamista ja analysointia haitallisten hyönteisten, kuten sarvijäärien, havaitsemiseksi. Näiden lisäksi tarkastellaan myös ympäristön monitoroinnin turvallisuuteen liittyviä haasteita artikkelin \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} (Adu-Manu et al., 2022) pohjalta, joka toimii tukena sovellusartikkeleiden tarkastelulle.
+
+Tämän työn tavoitteena on antaa yleiskuva valittujen sovellusten toimintaperiaatteista sekä niiden hyödyntämistä teknologioista ja tuoda esiin keskeisiä haasteita, joita langattomien sensoriverkkojen käyttöönottoon liittyy ympäristön seurannassa. Työssä käsitellään artikkeleita kurssin luentovideoiden ja luentomateriaalien rajaamien aiheiden kautta.
+
+\subsection*{Generatiivisen tekoälyn käyttö}
+
+Tekoälyä on käytetty tiedonhaun apuna. Suoritin sekä perinteistä Google Scholar että Gemini Deep Research tiedonhakua. Jälkimmäisessä käytetty kehote ja taulukkomuotoon parsimani tulokset löytyvät liitteistä (ks. Liite \ref{app:deep-research} ja Liite \ref{app:deep-research-results}). Tekoälyä on käytetty myös muotoilun apuna esimerkiksi kääntäessä minun omista muistiinpanoita Markdown-muotoisia taulukoita LaTeX-muotoon.
 
 
 % --------------------------------------------------  %
 %                                                     %
-%                  Otsikko                            %
+%                  Flora & Fauna                      %
 %                                                     %
 % --------------------------------------------------- %
-\chapter{Otsikko}
+\chapter{Flora & Fauna sovellukset}
 
-\todo Tämäkin koko homma kesken.
+
+% --------------------------------------------------  %
+%                Yleiskuvaus                          %
+% --------------------------------------------------- %
+\section{Artikkeleiden haku ja valinta}
+
+\todo Selitä lyhyesti, mitä etsin, miksi, ja miten valitsin kyseiset.
+
+Ensimmäinen valittu: Volcano \cite{volcano}
+
+Toinen valittu: TreeVibes \cite{treevibes}, joka löytyi Deep Research -työn parsimisvaiheessa, ja liitteissä se tunnetaan tunnuksella 9B (ks.Liite \ref{app:deep-research-results}). Tekoäly ehdotus ei sisältänyt TreeVibes-julkaisua, mutta julkaisu tunnusnumeroltaan 9 käytti kyseistä sensoria ja viittasi tähän työhön lähteissään. Alkuperäinen artikkeli osoittautui enemmän tähän tehtävänantoon sopivaksi kuin datan analytiikkaa ja koneoppimista painottava jatkotutkimus.
+
+Kolmas valittu julkaisu on kyselytutkimus, joka käsittelee WSN-protokollien turvallisuutta, Scholarilla löytynyt lähde, joka tunnetaan liitteissä tunnusnumerolla 26(ks. Liite \ref{app:google-scholar-results}): \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} \cite{security}.
+
+IEEE-artikkeleihin eivät Google Scholarin linkit useimmiten toimineet, mutta pääsin niihin käsiksi Jyväskylän Yliopiston aineistohaun kautta. Aineistoa tunnusnumero 17 (ks.Liite \ref{app:deep-research-results}) en saanut jostain syystä ladattua laisinkaan. Sen sisältö on mielenkiintoinen, mutta pudotin sen pois, koska palautuksessa vaaditaan PDF-formaattia. Vain HTML-kokoteksti oli saatavilla.
+
+% --------------------------------------------------  %
+%                Yleiskuvaus                          %
+% --------------------------------------------------- %
+\section{Sovellusartikkeleiden yleiskatsaus}
+
+\todo Kuvaa lyhyesti molempien sovellusten taustat: mitä ongelmaa ne ratkaisevat?
+
+\todo Artikkelissa A keskitytään... 
+
+\todo kun taas artikkelissa B lähestymistapa on...
+
+
+% --------------------------------------------------  %
+%          Toiminnallisuus ja teknologiat             %
+% --------------------------------------------------- %
+\section{Toiminnallisuus ja teknologiat}
+
+\todo Tässä on tärkeää käyttää luennoilla opittua luokittelua (arkkitehtuuri, protokollat, teknologiat).
+
+\todo Voit käyttää taulukkoa, jos haluat havainnollistaa eroja (esim. Artikkeli A käyttää LoRa-teknologiaa, Artikkeli B ZigBeetä).
+
+\todo Käy läpi vaaditut tekniset termit: QoS, elinaika (energiankulutus), ylläpidettävyys ja skaalautuvuus kummankin paperin osalta.
+
+% --------------------------------------------------  %
+%               Analyysi ja vertailu                  %
+% --------------------------------------------------- %
+\section{Analyysi ja vertailu}
+
+\todo Arvioi, kuinka hyvin valitut toteutukset vastaavat niille asetettuja tavoitteita. Koska sinulla on kaksi artikkelia, voit analysoida, miksi toisessa on valittu erilainen arkkitehtuuri kuin toisessa.
+
+% --------------------------------------------------  %
+%                                                     %
+%                  Yhteenveto                         %
+%                                                     %
+% --------------------------------------------------- %
+\chapter{Yhteenveto}
+
+\appendix
+
+\chapter{Deep Research kehote}
+\label{app:deep-research}
+
+Alla on kehote, jota käytin löytääkseni mielenkiintoisia WSN-sovelluskohteita valitussa kontekstissa. Tekoälynä Google Gemini Pro, Deep Reseach -tila.
+
+\vspace{1.0\baselineskip} % ----
+
+\noindent
+\textbf{Role:} You are an expert academic researcher specializing in Wireless Sensor Networks (WSN) and the Internet of Things (IoT).
+
+\vspace{1.0\baselineskip} % ----
+
+\noindent
+\textbf{Task:} Identify 10--20 unique, rare, or surprising ``Flora \& Fauna'' WSN application cases. I am looking for ``out-of-the-box'' topics that go beyond common greenhouse monitoring or livestock tracking.
+
+\vspace{1.0\baselineskip} % ----
+
+\noindent
+\textbf{Inspiration for Uniqueness:}
+
+\noindent
+\begin{itemize}
+    \item \textbf{Fauna:} Monitoring the synchronized flashing of fireflies, tracking highly endangered or elusive species (e.g., pangolins, snow leopards, or deep-sea vents), or bio-logging with miniature sensors on insects/birds.
+    \item \textbf{Flora:} Monitoring ``plant intelligence'' or communication (e.g., fungal networks/mycelium), monitoring rare orchid habitats, or tracking the ``heartbeat'' (sap flow) of ancient trees.
+    \item \textbf{Extreme (Flora or Fauna) Environments:} Underwater sensor networks for coral reef health or sensors in high-altitude volcanic ecosystems.
+\end{itemize}
+
+\textbf{Strict Constraints from the Assignment Brief:}
+
+\noindent
+\begin{itemize}
+    \item \textbf{Context:} The search must align with the ``Flora \& Fauna'' category as defined in Kandris, D. et al. (2020), ``Applications of Wireless Sensor Networks: An Up-to-Date Survey''.
+    \item \textbf{Date Range:} Prioritize papers from 2021--2025. Do not suggest anything older than 2015.
+    \item \textbf{Paper Quality:} Focus on Journal Articles from reputable publishers (IEEE, Elsevier/ScienceDirect, MDPI Sensors, ACM). I have access to University Google Scholar and IEEE library among others, so I can access wide range of papers.
+    \item \textbf{Technical Depth:} Each suggested case must be based on a paper that describes a concrete implementation or architecture. The paper must contain enough detail to analyze:
+    \begin{itemize}
+        \item \textbf{Architecture \& Technologies:} (e.g., LoRaWAN, NB-IoT, ZigBee, 5G, or acoustic underwater protocols). Maybe even Smart Dust.
+        \item \textbf{QoS \& Performance:} The paper should mention data like battery life (energy consumption), scalability, or network management.
+    \end{itemize}
+\end{itemize}
+
+\noindent
+\textbf{Output Format:} For each suggestion, provide:
+
+\begin{itemize}
+    \item Title of the Research Paper \& Authors.
+    \item Publication Year \& Journal Name.
+    \item A Brief ``Hook'': Why is this case unique/rare?
+    \item Data Availability Check: Briefly confirm if the paper includes a description of the system architecture or technical parameters (QoS, lifetime, etc.) needed for my analysis.
+\end{itemize}
+
+\chapter{Deep Research löydökset}
+\label{app:deep-research-results}
+
+Viimeinen sarake, \emph{Grade}, on tämän raportin luojan antama paino sille, kuinka hyvin julkaisu soveltuu tehtävänantoon ja mieltymyksiin. Suluissa oleva teksti on mahdollinen syy hylkäykselle, kuten jos teos on selkeästi IoT- tai koneoppimisaiheinen.
+
+\begin{longtable}{|p{0.8cm}|p{6cm}|p{1.5cm}|p{1.8cm}|p{2cm}|}
+\hline
+\textbf{Nro} & \textbf{Alkuperäinen otsikko} & \textbf{Vuosi} & \textbf{Linkki} & \textbf{Grade \%} \\
+\hline
+\endfirsthead
+
+\multicolumn{5}{c}%
+{{\bfseries -- jatkuu edelliseltä sivulta}} \\
+\hline
+\textbf{Nro} & \textbf{Alkuperäinen otsikko} & \textbf{Vuosi} & \textbf{Linkki} & \textbf{Grade \%} \\
+\hline
+\endhead
+
+\hline \multicolumn{5}{|r|}{{Jatkuu seuraavalla sivulla...}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+1 & Internet of Plants: Machine Learning System for Bioimpedance-Based Plant Monitoring & 2025 & \href{https://www.mdpi.com/1424-8220/25/24/7549}{MPDI} & 50 \% \\
+\hline
+2 & I-TREES: A Context-Aware Framework for Energy-Efficient Tree Health Monitoring in Forest Internet of Trees (IoTr) Networks & 2025 & \href{https://ojs.aaai.org/index.php/AAAI-SS/article/view/36043}{AAAI} & 60 \% (IoT) \\
+\hline
+3 & Hearing nature's heartbeat: towards large-scale real-time forest monitoring network in Italy & 2025 & \href{https://iforest.sisef.org/contents/?id=ifor4830-018}{iForest} & 30 \% (IoT) \\
+\hline
+4 & Toward a Unified TreeTalker Data Curation Process & 2022 & \href{https://www.mdpi.com/1999-4907/13/6/855}{MDPI} & 60 \% (IoT) \\
+\hline
+5 & Fungal circuitry: mycelium as a living sensor for smart structures & 2024 & \href{https://www.researchgate.net/publication/380473735_Fungal_circuitry_mycelium_as_a_living_sensor_for_smart_structures}{Linkki} & 0 \% (Off topic) \\
+\hline
+6 & Enhancing Vanilla Planifolia Generative Phase via IoT-Based Microclimate Control & 2025 & \href{https://ejournal.unipas.ac.id/index.php/Agro/article/view/2171}{Unipas} & 0 \% (IoT) \\
+\hline
+7 & Chatting with Plants (Orchids) in Automated Smart Farming using IoT, Fuzzy Logic and Chatbot & 2019 & \href{https://www.astesj.com/v04/i05/p22/}{ASTEJ} & 0 \% (IoT) \\
+\hline
+8 & WaggleNet: A LoRa and MQTT-Based Monitoring System for Internal and External Beehive Conditions & 2025 & \href{https://www.arxiv.org/pdf/2512.07408}{ArXiv} & 90 \% \\
+\hline
+9 & Intelligent IoT-Aided Early Sound Detection of Red Palm Weevils & 2021 & \href{https://www.researchgate.net/publication/354148479_Intelligent_IoT-Aided_Early_Sound_Detection_of_Red_Palm_Weevils}{ResearchG} & 80 \% \\
+\hline
+9B & TreeVibes: Modern Tools for Global Monitoring of Trees for Borers & 2021 & \href{https://www.mdpi.com/2624-6511/4/1/17}{MDPI} & 90 \% \\
+\hline
+10 & Early Detection of Red Palm Weevil Infestations using Deep Learning Classification of Acoustic Signals & 2023 & \href{https://arxiv.org/abs/2308.15829}{ArXiv} & 0 \% (ML) \\
+\hline
+11 & MosquIoT: A System Based on IoT and Machine Learning for the Monitoring of Aedes aegypti & 2024 & \href{https://arxiv.org/abs/2401.16258}{ArXiv} & 0 \% (ML) \\
+\hline
+12 & Embracing firefly flash pattern variability with data-driven species classification & 2023 & \href{https://www.biorxiv.org/content/10.1101/2023.03.08.531653v3.full-text}{BiorXiv} & 0 \% (ML) \\
+\hline
+13 & Timely poacher detection and localization using sentinel animal movement & 2021 & \href{https://www.nature.com/articles/s41598-021-83800-1}{Nature} & 0 \% (GPS, ML) \\
+\hline
+14 & Monitoring Endangered and Rare Wildlife in the Field: A Foundation Deep Learning Model (KI-CLIP) & 2023 & \href{https://www.mdpi.com/2076-2615/13/20/3168}{MPDI} & 0 \% (ML) \\
+\hline
+15 & AviEar: An IoT-based Low Power Solution for Acoustic Monitoring of Avian Species & 2024 & \href{https://ieeexplore.ieee.org/abstract/document/10742275}{IEEE} & 0 \% (IoT) \\
+\hline
+16 & TRITON: Open Telemetry and Location Estimation for Marine Monitoring Based on IoT and LoRa & 2024 & \href{https://ieeexplore.ieee.org/abstract/document/10807074}{IEEE} & 10 \% (IoT) \\
+\hline
+17 & Energy-optimized monitoring system for underground cave environments based on long preamble LoRa & 2025 & \href{https://ieeexplore.ieee.org/document/10870271}{IEEE} & 80 \% \\
+\hline
+18 & An Integrated UIoT-based Coral Reef Monitoring and Protection Platform Based on AI \& Digital Twin & 2023 & \href{https://www.researchgate.net/publication/368247076_AN_INTEGRATED_UIOT-BASED_CORAL_REEF_MONITORING_AND_PROTECTION_PLATFORM_BASED_ON_AI_DIGITAL_TWIN}{Linkki} & 0 \% (PowerPoint) \\
+\hline
+19 & Smart Aquaculture Analytics: Enhancing Shrimp Farming in Bangladesh through Real-Time IoT Monitoring & 2024 & \href{https://www.researchgate.net/publication/383680323_Smart_Aquaculture_Analytics_Enhancing_Shrimp_Farming_in_Bangladesh_through_Real-Time_IoT_Monitoring_and_Predictive_Machine_Learning_Analysis}{Linkki} & 0 \% (IoT, ML) \\
+\hline
+20 & An Internet of Things (IoT) Application on Volcano Monitoring & 2019 & \href{https://www.mdpi.com/1424-8220/19/21/4651}{MDPI} & 90 \% \\
+\hline
+\end{longtable}
+
+\chapter{Google Scholar haut}
+\label{app:google-scholar-results}
+
+Perinteisen Google Scholar -haun käytetyt hakusanat. Kaikissa haiussa oli rajauksena vuosi 2022 tai sitä tuoreemmat julkaisut.
+
+\begin{itemize}
+    \item \textbf{A:} \texttt{"WSN"\ AND\ "precision agriculture"}
+    \item \textbf{B:} \texttt{"WSN"\ AND\ "endangered"}
+    \item \textbf{C:} \texttt{"WSN"\ AND\ "Wildlife"}
+    \item \textbf{D:} \texttt{"WSN"\ AND\ "fungal"\ AND\ "sensor"}
+\end{itemize}
+
+\begin{longtable}{|p{0.8cm}|p{1cm}|p{7cm}|p{1.8cm}|}
+\hline
+\textbf{Nro} & \textbf{Haku} & \textbf{Otsikko} & \textbf{Linkki} \\
+\hline
+\endfirsthead
+
+\multicolumn{5}{c}%
+{{\bfseries -- jatkuu edelliseltä sivulta}} \\
+\hline
+\textbf{Nro} & \textbf{Haku} & \textbf{Otsikko} & \textbf{Linkki} \\
+\hline
+\endhead
+
+\hline \multicolumn{5}{|r|}{{Jatkuu seuraavalla sivulla...}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+21 & A & Low-Power Intelligent Wireless Sensor Network for Precision Agriculture Oriented Agricultural Greenhouse Management System & \href{https://ieeexplore.ieee.org/document/10891530}{IEEE} \\
+\hline
+22 & A & Wireless Sensor Networks for Precision Agriculture: A Review of NPK Sensor Implementations & \href{https://www.mdpi.com/1424-8220/24/1/51}{MDPI} \\
+\hline
+23 & B & WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey & \href{https://onlinelibrary.wiley.com/doi/abs/10.1155/2022/1628537}{Wiley} \\
+\hline
+24 & B & Locating Nesting Sites for Critically Endangered Galápagos Pink Land Iguanas (Conolophus marthae) & \href{https://www.mdpi.com/2076-2615/14/12/1835}{MDPI} \\
+\hline
+25 & C & Unmanned Aerial Surveillance and Tracking System in Forest Areas for Poachers and Wildlife & \href{https://ieeexplore.ieee.org/abstract/document/10788704}{IEEE} \\
+\hline
+26 & D & Location-Aware IoT-Enabled Wireless Sensor Networks for Landslide Early Warning & \href{https://www.mdpi.com/2079-9292/11/23/3971}{MDPI} \\
+\hline
+\end{longtable}
 
 \bibliography{KokkolaRaportti}
 
