@@ -77,41 +77,53 @@ Raporttia kirjoittaessa oli tärkeää löytää artikkeli (tai useampi), jossa 
 
 Kuten liitteiden kehotteista on luettavissa, alkuperäinen aiherajaus oli \emph{Flora \& Fauna}. Julkaisuja karsiessa valtaosa tekoälyn ehdottamista julkaisuista karsiutui pois, koska niiden pääpaino oli selkeästi IoT:n tai koneoppimisen puolella. Pisimpään harkinnanalaisena pysyi TreeVibes-sensoriin liittyvät kaksi  julkaisua. Ne tunnetaan numeroilla 9 ja 9B liitteissä (ks.Liite \ref{app:deep-research-results}). Deep Resarchin tuottama ehdotus ei sisältänyt alkuperäistä TreeVibes-julkaisua, mutta julkaisu tunnusnumeroltaan 9 käytti kyseistä sensoria ja viittasi tähän työhön lähteissään. Artikkeleiden tarkempi silmäily valitettavasti todisti, että TreeVibes on pikemminkin IoT- kuin WSN-toteutus, joten julkaisut karsiutuivat pois. Tähän mennessä kaikki ladatut PDF-tiedostot olivat joutuneet hylkäyspinoon, paitsi väärää sovellusaluetta, eli ympäristöä, -- tarkemmin tulivuoria -- käsittelevä työ. Lopulta ei ollut muuta vaihtoehtoa kuin tehdä pivot: sovellusalueeksi valikoitui \emph{Environmental}.
 
-Näin sovellukseksi oli valikoitunut kirjoittajien Awadallah, Moure ja Torres-González julkaisu \emph{An Internet of Things (IoT) Application on Volcano Monitoring}. Julkaisu on Espanjan kansallisen maantieteellisen instituutin (IGN, esp. \emph{Instituto Geográfico Nacional}) Karariansaarten geofysiikan keskukselta (esp. \emph{Centro Geofísico de Canarias}). Myös tässä julkaisussa mainitaan IoT useita kertoja -- alkaen otsikosta. Luennoilla Ismo Hakala käsitteli tätä aihetta: termit Wireless Sensor Networks (WSN), Internet of Things (IoT) sekä Cyber-Physical Systems (CPS) ovat läheisesti toisiinsa liittyviä käsitteitä. Sopivalla Google Scholar -haulla (\texttt{"WSN"\ AND\ "IoT-enabled"}) löytyy vuoden 2020 jälkeen yli $13\,000$ tulosta. Kenties IoT nähdään tällöin IP-protokollaperheen tarjoamana toiminnallisuutena, jonka alemmalla kerroksella voi olla tai voi olla olematta kurssin määritelmän mukaisia WSN-laitteita. Käsitellyssä julkaisussa IoT-tasoa edustaa Raspberry Pi -gatewayltä alkava Internet-yhteys. Alemman mittaustason laitteet ovat kurssin määritelmän mukaisia WSN-mittalaitteita ja hyödyntävät kommunikaatioon LoRa-tekniikkaa. Näihin teknisiin seikkoihin tutustutaan myöhemmissä luvuissa.
+Näin sovellukseksi oli valikoitunut kirjoittajien Awadallah, Moure ja Torres-González julkaisu \emph{An Internet of Things (IoT) Application on Volcano Monitoring}. Julkaisu on Espanjan kansallisen maantieteellisen instituutin (IGN, esp. \emph{Instituto Geográfico Nacional}) Karariansaarten geofysiikan keskukselta (esp. \emph{Centro Geofísico de Canarias}). Myös tässä julkaisussa mainitaan IoT useita kertoja -- alkaen otsikosta. Luennoilla Ismo Hakala käsitteli tätä aihetta: termit Wireless Sensor Networks (WSN), Internet of Things (IoT) sekä Cyber-Physical Systems (CPS) ovat läheisesti toisiinsa liittyviä käsitteitä. Sopivalla Google Scholar -haulla (\texttt{"WSN"\ AND\ "IoT-enabled"}) löytyy vuoden 2020 jälkeen yli $13\,000$ tulosta. Kenties IoT nähdään tällöin IP-protokollaperheen tarjoamana toiminnallisuutena, jonka alemmalla kerroksella voi olla tai voi olla olematta kurssin määritelmän mukaisia WSN-laitteita. Käsitellyssä julkaisu muotoilee tämän näin: \emph{"WSN is often a technology used within an IoT system"} \cite{volcano}. Tässä tulivuorten sensorointia käsittelevässä toteutuksessa IoT-tasoa edustaa Raspberry Pi -gatewayltä alkava Internet-yhteys. Alemman mittaustason laitteet ovat kurssin määritelmän mukaisia WSN-mittalaitteita ja hyödyntävät kommunikaatioon LoRa-tekniikkaa. Näihin teknisiin seikkoihin tutustutaan myöhemmissä luvuissa.
 
 Valitun sovelluksen lisäksi raportin aineistoksi valikoitui toinen julkaisu, joka on kirjallisuuskatsaus (engl. review article), joka käsittelee WSN-protokollien turvallisuutta. Kyseinen Google Scholarilla löytynyt lähde, joka tunnetaan liitteissä tunnusnumerolla 26(ks. Liite \ref{app:google-scholar-results}), on otsikoltaan \emph{WSN Protocols and Security Challenges for Environmental Monitoring Applications: A Survey} \cite{security}. Tämä katsaus on mukana vertailukohtana ja tarjoamassa laajempaa pohjaa turvallisuusaiheen käsittelylle.
 
 % --------------------------------------------------  %
 %                Yleiskuvaus                          %
 % --------------------------------------------------- %
-\section{Sovellusartikkeleiden yleiskatsaus}
+\section{Sovellusartikkelin yleiskatsaus}
 
-\todo Kuvaa lyhyesti sovelluksen taustat: minkä ongelman se ratkaisee?
+Tulivuorenpurkausten ennustaminen ja riskien hallinta edellyttävät monipuolista signaalien seurantaa. Seurantaa tulee tehdä seisomologian eli maanjäristysopin, geodesian eli maanmittausopin ja geokemian näkökulmista. Raportissa \emph{An Internet of Things (IoT) Application on Volcano Monitoring} Awadallah ja kollegat ovat asentaneet kahdeksan matalavirtaista, LoRa-verkkoon kytkettyä lämpömittaria Teide-tulivuorelle Teneriffalla, Kanariansaarilla. He mittaavat fumarolien eli kaasulähteiden lämpötiloja. Perinteisiä mittaustapoja ovat paikan päällä tapahtuva mittaus -- in situ -- tai kaukokartoitusmenetelmät infrapunakameroita käyttäen. Suorat mittaukset ovat tarkkoja, mutta rajoittuvat tyypillisesti pienelle alueelle, sillä tulivuoret ovat tyypillisesti syrjäisiä ja vaikeakulkuisia ympäristöjä. \cite{volcano}
 
-\todo Artikkelissa A keskitytään... 
+Näiden haasteiden ratkaisemiseksi langattomat sensoriverkot (WSN) ja esineiden internet (IoT) tarjoavat kustannustehokkaan ja energiapihin vaihtoehdon, joka mahdollistaa ympäristön autonomisen valvonnan ilman jatkuvaa fyysistä huoltoa. Vaikka WSN-teknologiaa on aiemmin sovellettu seismiseen seurantaan, sen hyödyntäminen lämpötilan ja kaasujen monitoroinnissa on ollut vähäistä huolimatta näiden muuttujien tärkeydestä vulkaanisen aktiivisuuden arvioinnissa. Tutkimus vastaa tähän tarpeeseen esittelemällä skaalautuvan WSN/IoT-mittausjärjestelmän, joka kestää vulkaamisten alueiden ankarat olosuhteet ja pärjää minimaalisella virralla, paristovirralla. \cite{volcano}
 
 
 % --------------------------------------------------  %
-%          Toiminnallisuus ja teknologiat             %
+%                 Toiminnallisuus                     %
 % --------------------------------------------------- %
-\section{Toiminnallisuus ja teknologiat}
+\section{Toiminnallisuus}
 
-\todo Tässä on tärkeää käyttää luennoilla opittua luokittelua (arkkitehtuuri, protokollat, teknologiat).
+\subsection{Arkkitehtuuri}
+
+Tulivuorosovelluksen verkkotopologia noudattaa hierarkkista mallia, joka koostuu Teneriffan osalta kolmesta pääkomponentista: sensorisolmuista (end devices), toistimesta (repeater) ja yhdyskäytävästä (gateway) \cite{volcano}. Kuten kurssin luennolla todettiin, langattomissa sensoriverkoissa etäisyyden kasvaessa lähetystehon tarve kasvaa, jolloin monihyppytekniikka (multi-hop) on usein välttämätöntä energian säästämiseksi ja kantaman pidentämiseksi. Tulivuorisovelluksessa tämä on toteutettu sijoittamalla toistin kraatterin reunalle välittämään viestejä sensorien ja kauempana sijaitsevan yhdyskäytävän välillä, mikä mahdollistaa kommunikaation myös ilman suoraa näköyhteyttä yhdyskäytävään \cite{volcano}.
+
+Laitteistotasolla sovelluksen arkkitehtuuri ilmentää resurssirajoitteisten laitteiden jakoa eri luokkiin. Luentomateriaalin perustella tyypilliset sensorisolmut ovat usein "Class 1" -laitteita (n. 10 kB RAM), mutta tässä sovelluksessa käytetty PIC16LF1788-mikrokontrolleri 2 kB:n keskusmuistillaan sijoittuu alimpaan "Class 0" -kategoriaan, mikä asettaa tiukat rajat ohjelmistolle ja vaatii äärimmäistä energiatehokkuutta. Tämän vastapainona yhdyskäytävänä toimiva Raspberry Pi edustaa tehokkaampaa laiteluokkaa, joka kykenee ajamaan Linux-käyttöjärjestelmää ja hallinnoimaan TCP/IP-liikennettä. Raspberry Pi on kiinni verkkovirrassa ja jossakin mainitsemattomassa, alueella saatavilla olevassa Internet-yhteydessä. \cite{volcano}
+
+Kokonaisjärjestelmä noudattaa kerrosarkkitehtuuria, joka ulottuu fyysisestä datan keruusta pilvipalveluun asti. Kuten kurssin luennolla todettiin, yhdyskäytävä (gateway) toimii siltana ja protokollamuuntimena sensoriverkon ja laajemman verkon (kuten Internetin) välillä. Tulivuorisovelluksessa yhdyskäytävä vastaanottaa LoRa-radiolla lähetetyt mittaukset, tallentaa ne paikallisesti ja synkronoi tiedot erilliseen tietokeskukseen (Data Analysis Center) visualisointia varten \cite{volcano}. Tämä vastaa luentokalvojen esittämää viisikerroksista "Device-Network-Processing-Application Layer-Business" -jakoa, jossa dataa jalostetaan ylemmillä tasoilla loppukäyttäjälle ymmärrettävään muotoon.
+
+\subsection{Protokollat}
+
+\todo Tähän LoRasta jottain.
+
+\subsection{Teknologiat}
 
 \todo Yritä selvittää/päätellä QoS, elinaika, laajennettavuus, ylläpidettävyys, ohjelmoitavuus, tietoturvallisuus, energiankulutus, itseorganisoituvuus, verkonhallinta jne
-
-\todo Voit käyttää taulukkoa, jos haluat havainnollistaa eroja (esim. Artikkeli A käyttää LoRa-teknologiaa, Artikkeli B ZigBeetä).
 
 \todo Käy läpi vaaditut tekniset termit: QoS, elinaika (energiankulutus), ylläpidettävyys ja skaalautuvuus kummankin paperin osalta.
 
 % --------------------------------------------------  %
-%               Analyysi ja vertailu                  %
+%                      Analyysi                       %
 % --------------------------------------------------- %
-\section{Analyysi ja vertailu}
+\section{Analyysi}
 
-\todo Vertaile näkökulmasta: QoS, elinaika, laajennettavuus, ylläpidettävyys, ohjelmoitavuus, tietoturvallisuus, energiankulutus, itseorganisoituvuus, verkonhallinta jne
+Käsitelty artikkeli on merkittävässä ristiriidassa kirjallisuuskatsauksen esittämien vaatimusten kanssa. Tulivuorten lämpötilamittauksissa keskitytään energiatehokkuuteen ja kustannusten minimointiin. Valitussa PIC16LF1788-mikrokontrollerissa on vain 2 KB muistia \cite{volcano}, joten se lasketaan kurssimateriaalin perusteella Class 0 -noodiksi. Siru vie noin 3 mikrowattia tehoa unitilassa ja 70 milliwattia käytössä. Tämä 32 megahertsin suoritin tuskin olisi kykeneväinen ajamaan raskaita turvallisuusprotokollia, kuten vahvaa salausta. Data lähetetään seuraavassa muodossa toistimille: $\text{VIDXX:abc.de,f.gh}$, jossa ID on noodin ID, abc.de on lämpötilatulos eli esimerkiksi 123.22 astetta, ja f.gh on pariston jännite esimerkiksi 3.25 volttia \cite{volcano}. Tämä mahdollistaa hyökkäyksen, jossa hyökkääjä lähettää LoRa-radiolla toistuvasti mittauskäskyjä sensoreille, mikä kuluttaa sensoreiten paristot merkittävästi normaalia toimintaa nopeammin. Kyselytutkimuksessa tämä luokitellaan verkkotason hyökkäykseksi. Istuvimpana terminä on \emph{Generation of false messages}. Mahdollinen ehdotettu puolustuskeino on salaus tai tunnistautuminen. \cite{security} Mikäli datan perusteella tehdään automaattisia tai puoliautomaattisia varoituksia tulivuoren purkautumisesta, vihamielinen valtio voisi vaivattomasti tekaista paketteja ja saada näyttämään mittaustulokset siltä, että saarelle tulisi nostaa hälytystila.
 
-\todo Arvioi, kuinka hyvin valitut toteutukset vastaavat niille asetettuja tavoitteita. Koska sinulla on kaksi artikkelia, voit analysoida, miksi toisessa on valittu erilainen arkkitehtuuri kuin toisessa.
+Sensoreiden keräämä data ei kenties ole luottamuksellista, joten salauksen puute ei aiheuta arkaluonteisen tiedon, yrityssalaisuuksien tai henkilötietojen vuotamista salakuuntelun kautta. Suurin haaste on kuitenkin se, että artikkeli ei laisinkaan käsittele mahdollisuutta, että joku häiritsisi verkkoa, syöttäisi vääriä lämpötilatietoja tai vakoilisi dataa. Jää epäselväksi, kuinka hyvin esimerkiksi yhdyskäytävänä toimiva Raspberry Pi on suojattu. Kuvien perusteella se on ulkotilassa olevassa suojalaukussa. Mikäli sen muistikorttia ei ole salattu, mahdollinen hyökkääjä voi vaivattomasti ottaa talteen Linux-käyttöjärjestelmästä mahdolliset SSH-avaimet tai pilvipalveluiden tokenit.
+
+
 
 % --------------------------------------------------  %
 %                                                     %
