@@ -9,3 +9,7 @@ backup/
 
 # Zips in root dir
 *.zip
+
+# Python
+.venv/
+__marimo__/
