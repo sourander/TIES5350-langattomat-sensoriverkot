@@ -3,5 +3,7 @@ name = "ties5350-langattomat-sensoriverkot"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "google-genai>=1.64.0",
     "marimo[recommended]>=0.19.11",
+    "scipy>=1.17.0",
 ]
