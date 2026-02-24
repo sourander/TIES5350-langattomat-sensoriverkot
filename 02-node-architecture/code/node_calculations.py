@@ -871,12 +871,23 @@ def _(linear_to_db, math):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Lora
+    ## LoRa
 
-    LoRa uses an spreading factor (SF) between 7 and 12.
+    LoRa uses a spreading factor (SF) between 7 and 12.
 
-    * SF impact the communication of LoRa
-    * A larger SF increases the time on air, which increases energy, reduces the data rate, and improve communivation range
+    * SF impacts the communication of LoRa
+    * A larger SF increases the time on air, which increases energy consumption, reduces the data rate, and improves communication range
+
+    ### Parameter Reference
+
+    | Variable | Description | Engineering Unit |
+    | -------- | ----------- | ---------------- |
+    | BW | Bandwidth | Hz (typically 125 000 Hz = 125 kHz) |
+    | SF | Spreading Factor | Integer (7–12) |
+    | CR | Coding Rate | 4/(4+n), e.g. 4/5 ≈ 0.8 |
+    | T_sym | Symbol Duration | ms |
+    | ToA | Time on Air | ms |
+    | PL | Payload Size | Bytes |
 
     SF is given by the following formula:
 
@@ -911,33 +922,57 @@ def _(mo):
 
 
 @app.cell
-def _():
-    def compute_lora_data_rate(SF, B, CR):
-        """Computes the LoRa data rate in kbps."""
-        data_rate = SF * (B / (2**SF)) * CR
-        return round(data_rate / 1000, 2)
+def _(math):
+    def compute_bit_rate(SF, BW, CR):
+        """Calculates the raw LoRa bit rate in bits per second."""
+        return SF * (BW / 2**SF) * CR
 
-    compute_lora_data_rate(9, 125e3, 4/5) # 125 kbps with SF=8 and CR=4/5
-    return
+    def compute_symbol_duration(SF, BW):
+        """Calculates the duration of one LoRa symbol in milliseconds."""
+        return (2**SF / BW) * 1000
+
+    def compute_time_on_air(SF, BW, CR, PL, header=True, low_dr_optimize=False):
+        """Calculates the total Time on Air (ToA) for a LoRa packet in milliseconds."""
+        T_sym = compute_symbol_duration(SF, BW)
+        T_preamble = (8 + 4.25) * T_sym
+        IH = 0 if header else 1   # 0 = explicit header (default), 1 = implicit/no header
+        DE = 1 if low_dr_optimize else 0
+        CRC = 1                   # CRC is enabled by default in LoRaWAN
+        CR_int = round((1 / CR - 1) * 4)  # converts 4/5→1, 4/6→2, 4/7→3, 4/8→4
+        payload_sym = 8 + max(
+            math.ceil((8 * PL - 4 * SF + 28 + 16 * CRC - 20 * IH) / (4 * (SF - 2 * DE))) * (CR_int + 4),
+            0
+        )
+        T_payload = payload_sym * T_sym
+        return T_preamble + T_payload
+
+    def compute_max_daily_uplinks(ToA, duty_cycle_limit=0.01, ttn_fair_access_limit=30_000):
+        """Calculates max daily uplinks respecting the EU868 duty cycle and TTN fair access limits."""
+        day_ms = 24 * 60 * 60 * 1000
+        max_by_duty_cycle = math.floor((day_ms * duty_cycle_limit) / ToA)
+        max_by_ttn = math.floor(ttn_fair_access_limit / ToA)
+        return min(max_by_duty_cycle, max_by_ttn)
+
+    return (
+        compute_bit_rate,
+        compute_max_daily_uplinks,
+        compute_symbol_duration,
+        compute_time_on_air,
+    )
 
 
 @app.cell
-def _():
-    def calculate_lora_symbol_duration(SF, BW):
-        """Calculates the duration of one LoRa symbol in milliseconds."""
-        # Calculate chips per symbol (given as 2^SF)
-        symbol_rate = BW / (2**SF)
-        symbol_duration_seconds = 1 / symbol_rate
-        return symbol_duration_seconds * 1000 # convert to ms
+def _(compute_bit_rate, compute_symbol_duration):
+    # Data rate and symbol duration for each SF at 125 kHz BW, CR=4/5
+    def datarate_n_symbol_durations():
+        print(f"{'SF':<4} {'Bit Rate (bps)':>15} {'Symbol Duration (ms)':>22}")
+        print("-" * 44)
+        for sf in range(7, 13):
+            dr = compute_bit_rate(sf, 125e3, 4/5)
+            ts = compute_symbol_duration(sf, 125e3)
+            print(f"SF{sf:<2} {dr:>15.2f} {ts:>22.3f}")
 
-    # Given values
-    sf_value = 9
-    bandwidth_hz = 500e3  # 500 kHz
-
-    # Calculate symbol duration
-    symbol_duration = calculate_lora_symbol_duration(sf_value, bandwidth_hz)
-
-    print(f"Yhden symbolin kesto on: {symbol_duration:.4f} ms")
+    datarate_n_symbol_durations()
     return
 
 
@@ -993,13 +1028,19 @@ def _(mo):
 
 
 @app.cell
-def _():
-    def symbol_rate(SF, BW):
-        """Calculates the symbol rate (time to send one symbol) in milliseconds."""
-        return (2 ** SF) / BW * 1000 # convert to ms
+def _(compute_time_on_air):
+    # LoRaWAN EU868 maximum payload per SF (bytes), using explicit header + CRC
+    # Ref: https://www.thethingsnetwork.org/docs/lorawan/regional-parameters/
+    def maximum_payload_per_sf_explicit_header_crc():
+        max_payload = {7: 222, 8: 222, 9: 115, 10: 51, 11: 51, 12: 51}
+    
+        print(f"{'SF':<4} {'Max PL (B)':>10} {'ToA (ms)':>12}")
+        print("-" * 30)
+        for sf, pl in max_payload.items():
+            toa = compute_time_on_air(sf, 125e3, 4/5, pl)
+            print(f"SF{sf:<2} {pl:>10} {toa:>12.1f}")
 
-    symbol_rate(9, 125e3)
-
+    maximum_payload_per_sf_explicit_header_crc()
     return
 
 
@@ -1050,15 +1091,35 @@ def _(mo):
 
 
 @app.cell
-def _(math):
-    toa_message_ms = 400
-    duty_cycle_percent = 1
-    one_hour_ms = 60 * 60 * 1000
+def _(compute_bit_rate, compute_max_daily_uplinks, compute_time_on_air, math):
+    # Maximum daily uplinks per SF using max allowed payload, EU868 + TTN limits
+    max_payload = {7: 222, 8: 222, 9: 115, 10: 51, 11: 51, 12: 51}
+    BW = 125e3
+    CR = 4/5
 
-    allowed_airtime_ms = one_hour_ms * (duty_cycle_percent / 100)
-    max_messages = math.floor(allowed_airtime_ms / toa_message_ms)
+    EU868_DUTY_CYCLE = 0.01  # 1% legal limit
+    TTN_FAIR_ACCESS_LIMIT_MS = 30_000  # 30 seconds per 24h
 
-    print(f"Max. messages in one hour: {max_messages}")
+    print(f"{'SF':<4} {'ToA (ms)':>10} {'Max/day (EU868)':>17} "
+          f"{'Max/day (TTN)':>15} {'Limiting Factor':>17} {'Bitrate':>12}")
+    print("-" * 80)
+    for sf, pl in max_payload.items():
+        toa = compute_time_on_air(sf, BW, CR, pl)
+        bitrate = compute_bit_rate(sf, BW, CR)
+        day_ms = 24 * 60 * 60 * 1000
+
+        max_eu = math.floor((day_ms * EU868_DUTY_CYCLE) / toa)
+        max_ttn = math.floor(TTN_FAIR_ACCESS_LIMIT_MS / toa)
+        limit = "EU868" if max_eu < max_ttn else "TTN"
+        max_combined = compute_max_daily_uplinks(toa, EU868_DUTY_CYCLE, TTN_FAIR_ACCESS_LIMIT_MS)
+    
+        # The .0f rounds to zero decimal places for display purposes
+        print(f"SF{sf:<2} {toa:>10.1f} {max_eu:>17} {max_ttn:>15} {limit:>17} {bitrate:>12.0f}")
+    return
+
+
+@app.cell
+def _():
     return
 
 
