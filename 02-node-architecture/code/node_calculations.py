@@ -882,7 +882,7 @@ def _(mo):
 
     | Variable | Description | Engineering Unit |
     | -------- | ----------- | ---------------- |
-    | BW | Bandwidth | Hz (typically 125 000 Hz = 125 kHz) |
+    | BW | Bandwidth | Hz (125 kHz) |
     | SF | Spreading Factor | Integer (7–12) |
     | CR | Coding Rate | 4/(4+n), e.g. 4/5 ≈ 0.8 |
     | T_sym | Symbol Duration | ms |
@@ -901,6 +901,8 @@ def _(mo):
     R_s = \frac{BW}{2^{SF}}
     $$
 
+    The table shows the ultimate LoRa trade-off: You are trading speed (chips/symbol) for range and reliability (SNR limit). This is beow calculated in the `compute_symbol_duration()` function. Note that chips/symbol is $2^{SF}$, and the SNR limit is the minimum SNR required for successful communication at that SF. We would need this SNR to compute Link Budget or Maximum Range like was done above with the Friis.
+
     | SF | chips/symbol | SNR limit (dB) |
     | -- | ------------ | -------------- |
     | 7  | 128  | -7.5 |
@@ -916,7 +918,7 @@ def _(mo):
     DataRate = SF \cdot \frac{B}{2^{SF}} \cdot CR
     $$
 
-    Where $B$ is bandwidth and $CR$ is coding rate amont numbers $4/5, 4/6, 4/7, \text{or} 4/8$.
+    Where $B$ is bandwidth and $CR$ is coding rate amount numbers $4/5, 4/6, 4/7, \text{ or } 4/8$.
     """)
     return
 
@@ -925,24 +927,29 @@ def _(mo):
 def _(math):
     def compute_bit_rate(SF, BW, CR):
         """Calculates the raw LoRa bit rate in bits per second."""
+        # Formula from Slide 157/174
         return SF * (BW / 2**SF) * CR
 
     def compute_symbol_duration(SF, BW):
         """Calculates the duration of one LoRa symbol in milliseconds."""
+        # Formula from slide 162/174
         return (2**SF / BW) * 1000
 
-    def compute_time_on_air(SF, BW, CR, PL, header=True, low_dr_optimize=False):
+    def compute_time_on_air(SF, BW, CR, PL, header=True):
         """Calculates the total Time on Air (ToA) for a LoRa packet in milliseconds."""
         T_sym = compute_symbol_duration(SF, BW)
         T_preamble = (8 + 4.25) * T_sym
-        IH = 0 if header else 1   # 0 = explicit header (default), 1 = implicit/no header
-        DE = 1 if low_dr_optimize else 0
-        CRC = 1                   # CRC is enabled by default in LoRaWAN
+
+        # DE is 0 when SF <= 10, and DE is 1 when SF >= 11
+        DE = 1 if SF >= 11 else 0
+
+        # This is some mind-boggline conversion to get the CR into an integer form.
         CR_int = round((1 / CR - 1) * 4)  # converts 4/5→1, 4/6→2, 4/7→3, 4/8→4
-        payload_sym = 8 + max(
-            math.ceil((8 * PL - 4 * SF + 28 + 16 * CRC - 20 * IH) / (4 * (SF - 2 * DE))) * (CR_int + 4),
-            0
-        )
+
+        # Formula from lecture slides
+        payload_sym = 8 + ((8 * PL - 4 * SF + 28 + 16) / (4 * (SF - 2 * DE))) * (CR_int + 4)
+
+        # Number of payload symbols * duration of one symbol gives us the payload time
         T_payload = payload_sym * T_sym
         return T_preamble + T_payload
 
@@ -985,19 +992,15 @@ def _(mo):
 
     | Data rate | SF | BW (kHz) | Bytes/sec | Range |
     | --------- | -- | -------- | --------- | ----- |
-    | 0         | 12 | 125      | 31       | Longest  |
-    | 1        | 11 | 125      | 55       | Longer |
-    | 2       | 10 | 125      | 122      | Long |
-    | 3       | 9  | 125      | 220      | Short |
-    | 4       | 8  | 125      | 390      | Shorter |
-    | 5        | 7  | 125      | 683      | Shortest |
+    | DR0         | 12 | 125      | 31       | Longest  |
+    | DR1        | 11 | 125      | 55       | Longer |
+    | DR2       | 10 | 125      | 122      | Long |
+    | DR3       | 9  | 125      | 220      | Short |
+    | DR4       | 8  | 125      | 390      | Shorter |
+    | DR5        | 7  | 125      | 683      | Shortest |
+
+    What is that table? This is poorly explained in the lecture. In LoRaWAN, instead of forcing developers to manually set SF and BW every time, the protocol defines standard Data Rate (DR) indices (DR0, DR1, DR2, etc.). In the EU868 region, DR0 is strictly defined as SF12 / 125 kHz. DR5 is SF7 / 125 kHz.
     """)
-    return
-
-
-@app.cell
-def _():
-    # Dunno if math relates to this
     return
 
 
@@ -1033,7 +1036,7 @@ def _(compute_time_on_air):
     # Ref: https://www.thethingsnetwork.org/docs/lorawan/regional-parameters/
     def maximum_payload_per_sf_explicit_header_crc():
         max_payload = {7: 222, 8: 222, 9: 115, 10: 51, 11: 51, 12: 51}
-    
+
         print(f"{'SF':<4} {'Max PL (B)':>10} {'ToA (ms)':>12}")
         print("-" * 30)
         for sf, pl in max_payload.items():
@@ -1112,7 +1115,7 @@ def _(compute_bit_rate, compute_max_daily_uplinks, compute_time_on_air, math):
         max_ttn = math.floor(TTN_FAIR_ACCESS_LIMIT_MS / toa)
         limit = "EU868" if max_eu < max_ttn else "TTN"
         max_combined = compute_max_daily_uplinks(toa, EU868_DUTY_CYCLE, TTN_FAIR_ACCESS_LIMIT_MS)
-    
+
         # The .0f rounds to zero decimal places for display purposes
         print(f"SF{sf:<2} {toa:>10.1f} {max_eu:>17} {max_ttn:>15} {limit:>17} {bitrate:>12.0f}")
     return
