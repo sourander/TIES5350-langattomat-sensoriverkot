@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.20.2"
 app = marimo.App(width="medium")
 
 
@@ -23,17 +23,6 @@ def _(mo):
     The data transmission capacity of a LoRa radio depends on the quality of the connection as well as the regulatory restrictions imposed on radio usage. By default, a bandwidth of **125 kHz** is used unless stated otherwise in the assignment.
 
     In this application task, you will determine the data transmission capacity for different **Spreading Factor (SF)** values, which vary based on connection quality. To assess whether the transmission capacity is sufficient, you must also estimate the **airtime** of the transmissions and account for the usage limitations set by **EU868** (regional regulations) and **TTN** (The Things Network).
-
-    ## TODO List
-
-    - [ ] **Review Data Rate Formulas:** Locate the method for calculating data transmission speed from the lecture materials.
-    - [ ] **Review Airtime Calculations:** Find the airtime ($t_{air}$) calculation examples and formulas from the lecture slides.
-    - [ ] **Perform Pre-computations for each SF (SF7–SF12):**
-        - [ ] Calculate the **Data Rate** for each SF.
-        - [ ] Calculate the **Airtime** for the maximum allowable payload.
-        - [ ] Calculate the **Maximum Number of Transmissions per Day** for each SF, accounting for:
-            - [ ] EU868 Duty Cycle limits (typically 1%).
-            - [ ] TTN Fair Access Policy (30 seconds of uplink airtime per 24 hours).
     """)
     return
 
@@ -168,8 +157,8 @@ def _(math):
     chip_max_bits = 12
 
     # Value ranges and required precision
-    temp_min, temp_max = -40.0, 85.0
-    target_resolution = 0.05  # Celsius
+    temp_min, temp_max = -20.0, 89.0
+    target_resolution = 0.025  # Celsius
 
     # 1. Calculate the required steps
     total_range = temp_max - temp_min
@@ -865,259 +854,6 @@ def _(linear_to_db, math):
         print(f"In Microwatts: {ptx_uw:.1f} µW")
 
     calculate_required_tx_power()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## LoRa
-
-    LoRa uses a spreading factor (SF) between 7 and 12.
-
-    * SF impacts the communication of LoRa
-    * A larger SF increases the time on air, which increases energy consumption, reduces the data rate, and improves communication range
-
-    ### Parameter Reference
-
-    | Variable | Description | Engineering Unit |
-    | -------- | ----------- | ---------------- |
-    | BW | Bandwidth | Hz (125 kHz) |
-    | SF | Spreading Factor | Integer (7–12) |
-    | CR | Coding Rate | 4/(4+n), e.g. 4/5 ≈ 0.8 |
-    | T_sym | Symbol Duration | ms |
-    | ToA | Time on Air | ms |
-    | PL | Payload Size | Bytes |
-
-    SF is given by the following formula:
-
-    $$
-    SF = \log_2\left(\frac{R_b}{R_s}\right)
-    $$
-
-    where $R_b$ is the bit rate and $R_s$ is the symbol rate. The speading factor defines two fundamental values: (1) the number of chips contained in each symbol is $2^{SF}$, and (2) the number of raw bits that can be encoded by that symbol is SF. The symbol rate can be calculated as:
-
-    $$
-    R_s = \frac{BW}{2^{SF}}
-    $$
-
-    The table shows the ultimate LoRa trade-off: You are trading speed (chips/symbol) for range and reliability (SNR limit). This is beow calculated in the `compute_symbol_duration()` function. Note that chips/symbol is $2^{SF}$, and the SNR limit is the minimum SNR required for successful communication at that SF. We would need this SNR to compute Link Budget or Maximum Range like was done above with the Friis.
-
-    | SF | chips/symbol | SNR limit (dB) |
-    | -- | ------------ | -------------- |
-    | 7  | 128  | -7.5 |
-    | 8  | 256  | -10  |
-    | 9  | 512  | -12.5 |
-    | 10 | 1024 | -15  |
-    | 11 | 2048 | -17.5 |
-    | 12 | 4096 | -20  |
-
-    Data rate can be computed as:
-
-    $$
-    DataRate = SF \cdot \frac{B}{2^{SF}} \cdot CR
-    $$
-
-    Where $B$ is bandwidth and $CR$ is coding rate amount numbers $4/5, 4/6, 4/7, \text{ or } 4/8$.
-    """)
-    return
-
-
-@app.cell
-def _(math):
-    def compute_bit_rate(SF, BW, CR):
-        """Calculates the raw LoRa bit rate in bits per second."""
-        # Formula from Slide 157/174
-        return SF * (BW / 2**SF) * CR
-
-    def compute_symbol_duration(SF, BW):
-        """Calculates the duration of one LoRa symbol in milliseconds."""
-        # Formula from slide 162/174
-        return (2**SF / BW) * 1000
-
-    def compute_time_on_air(SF, BW, CR, PL, header=True):
-        """Calculates the total Time on Air (ToA) for a LoRa packet in milliseconds."""
-        T_sym = compute_symbol_duration(SF, BW)
-        T_preamble = (8 + 4.25) * T_sym
-
-        # DE is 0 when SF <= 10, and DE is 1 when SF >= 11
-        DE = 1 if SF >= 11 else 0
-
-        # This is some mind-boggline conversion to get the CR into an integer form.
-        CR_int = round((1 / CR - 1) * 4)  # converts 4/5→1, 4/6→2, 4/7→3, 4/8→4
-
-        # Formula from lecture slides
-        payload_sym = 8 + ((8 * PL - 4 * SF + 28 + 16) / (4 * (SF - 2 * DE))) * (CR_int + 4)
-
-        # Number of payload symbols * duration of one symbol gives us the payload time
-        T_payload = payload_sym * T_sym
-        return T_preamble + T_payload
-
-    def compute_max_daily_uplinks(ToA, duty_cycle_limit=0.01, ttn_fair_access_limit=30_000):
-        """Calculates max daily uplinks respecting the EU868 duty cycle and TTN fair access limits."""
-        day_ms = 24 * 60 * 60 * 1000
-        max_by_duty_cycle = math.floor((day_ms * duty_cycle_limit) / ToA)
-        max_by_ttn = math.floor(ttn_fair_access_limit / ToA)
-        return min(max_by_duty_cycle, max_by_ttn)
-
-    return (
-        compute_bit_rate,
-        compute_max_daily_uplinks,
-        compute_symbol_duration,
-        compute_time_on_air,
-    )
-
-
-@app.cell
-def _(compute_bit_rate, compute_symbol_duration):
-    # Data rate and symbol duration for each SF at 125 kHz BW, CR=4/5
-    def datarate_n_symbol_durations():
-        print(f"{'SF':<4} {'Bit Rate (bps)':>15} {'Symbol Duration (ms)':>22}")
-        print("-" * 44)
-        for sf in range(7, 13):
-            dr = compute_bit_rate(sf, 125e3, 4/5)
-            ts = compute_symbol_duration(sf, 125e3)
-            print(f"SF{sf:<2} {dr:>15.2f} {ts:>22.3f}")
-
-    datarate_n_symbol_durations()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## LoRaWAN data rate
-
-    Data rate supported by LoRaWAN as table...
-
-    | Data rate | SF | BW (kHz) | Bytes/sec | Range |
-    | --------- | -- | -------- | --------- | ----- |
-    | DR0         | 12 | 125      | 31       | Longest  |
-    | DR1        | 11 | 125      | 55       | Longer |
-    | DR2       | 10 | 125      | 122      | Long |
-    | DR3       | 9  | 125      | 220      | Short |
-    | DR4       | 8  | 125      | 390      | Shorter |
-    | DR5        | 7  | 125      | 683      | Shortest |
-
-    What is that table? This is poorly explained in the lecture. In LoRaWAN, instead of forcing developers to manually set SF and BW every time, the protocol defines standard Data Rate (DR) indices (DR0, DR1, DR2, etc.). In the EU868 region, DR0 is strictly defined as SF12 / 125 kHz. DR5 is SF7 / 125 kHz.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## LoRa total air transmission
-
-    Total air transmission can be calculated as...
-
-    $$
-    T_{packet} = T_{preamble} + T_{payload}
-    $$
-
-    Symbol rate $T_{SR}$ is time to send one symbol. It depends on SF value and bandwidth
-
-    $$
-    T_{SR} = \frac{2^{SF}}{BW}
-    $$
-
-    LoRa packet includes preamble, header and payload
-
-    * Number of preamble symbols is (8 + 4, 25)
-    * The size of the header is typically 13 bytes and it is added to payload
-    * Maximum payload depends on spreading factor SF
-    """)
-    return
-
-
-@app.cell
-def _(compute_time_on_air):
-    # LoRaWAN EU868 maximum payload per SF (bytes), using explicit header + CRC
-    # Ref: https://www.thethingsnetwork.org/docs/lorawan/regional-parameters/
-    def maximum_payload_per_sf_explicit_header_crc():
-        max_payload = {7: 222, 8: 222, 9: 115, 10: 51, 11: 51, 12: 51}
-
-        print(f"{'SF':<4} {'Max PL (B)':>10} {'ToA (ms)':>12}")
-        print("-" * 30)
-        for sf, pl in max_payload.items():
-            toa = compute_time_on_air(sf, 125e3, 4/5, pl)
-            print(f"SF{sf:<2} {pl:>10} {toa:>12.1f}")
-
-    maximum_payload_per_sf_explicit_header_crc()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Preample time on air
-
-    Number of preamble symbols is (8 + 4, 25) and then Time-on-Air of preamble is
-
-    $$
-    ToA_{preample} = N_{preamble} \cdot T_{SR}
-    $$
-
-    For example: If SF9 and TSR is 4,096ms, the Time-on-Air of Preamble is
-
-    $$
-    ToA_{preample} = (8 + 4.25) \cdot 4.096ms = 50.176ms
-    $$
-    """)
-    return
-
-
-@app.cell
-def _():
-    def calculate_preamble_percentage(toa_packet_ms, toa_preamble_ms):
-        """Calculates the percentage of total airtime that the preamble occupies."""
-        percentage = (toa_preamble_ms / toa_packet_ms) * 100
-        return round(percentage, 2)
-
-    toa_packet = 1200 # ms
-    toa_preamble = 50 # ms
-
-    preamble_pct = calculate_preamble_percentage(toa_packet, toa_preamble)
-
-    print(f"Preamble osuus kokonaisajasta: {preamble_pct:.2f}%")
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ## Max LoRa messages in one hour
-
-    The Time on Air for a single LoRa message is 400 ms and the duty cycle is 1%. What is the maximum number of messages that can be sent within one hour?
-    """)
-    return
-
-
-@app.cell
-def _(compute_bit_rate, compute_max_daily_uplinks, compute_time_on_air, math):
-    # Maximum daily uplinks per SF using max allowed payload, EU868 + TTN limits
-    max_payload = {7: 222, 8: 222, 9: 115, 10: 51, 11: 51, 12: 51}
-    BW = 125e3
-    CR = 4/5
-
-    EU868_DUTY_CYCLE = 0.01  # 1% legal limit
-    TTN_FAIR_ACCESS_LIMIT_MS = 30_000  # 30 seconds per 24h
-
-    print(f"{'SF':<4} {'ToA (ms)':>10} {'Max/day (EU868)':>17} "
-          f"{'Max/day (TTN)':>15} {'Limiting Factor':>17} {'Bitrate':>12}")
-    print("-" * 80)
-    for sf, pl in max_payload.items():
-        toa = compute_time_on_air(sf, BW, CR, pl)
-        bitrate = compute_bit_rate(sf, BW, CR)
-        day_ms = 24 * 60 * 60 * 1000
-
-        max_eu = math.floor((day_ms * EU868_DUTY_CYCLE) / toa)
-        max_ttn = math.floor(TTN_FAIR_ACCESS_LIMIT_MS / toa)
-        limit = "EU868" if max_eu < max_ttn else "TTN"
-        max_combined = compute_max_daily_uplinks(toa, EU868_DUTY_CYCLE, TTN_FAIR_ACCESS_LIMIT_MS)
-
-        # The .0f rounds to zero decimal places for display purposes
-        print(f"SF{sf:<2} {toa:>10.1f} {max_eu:>17} {max_ttn:>15} {limit:>17} {bitrate:>12.0f}")
     return
 
 
