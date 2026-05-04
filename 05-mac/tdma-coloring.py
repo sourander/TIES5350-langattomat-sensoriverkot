@@ -7,6 +7,7 @@ with app.setup:
     import collections
 
     import seaborn as sns
+    import numpy as np
 
 
 @app.cell
@@ -190,9 +191,11 @@ def _(solutions):
     # Brute-force search over all valid schedules to find the minimum end-to-end delay.
     min_delay = float('inf')
     best_schedules = []
+    all_delays = []
 
     for schedule in solutions:
         current_delay = get_path_delay(schedule, route)
+        all_delays.append(current_delay)
 
         # New best found: reset the list and record this schedule.
         if current_delay < min_delay:
@@ -205,7 +208,7 @@ def _(solutions):
     print(f"Minimum possible delay for route N1 -> N10: {min_delay} time slots.")
     print(f"This optimal delay is achieved by {len(best_schedules)} different schedules.")
     print("Example optimal schedule:", best_schedules[0])
-    return (get_path_delay,)
+    return all_delays, get_path_delay
 
 
 @app.cell(hide_code=True)
@@ -240,7 +243,7 @@ def _(get_path_delay):
     # Test this
     delay = get_path_delay(my_schedule, my_route)
     print(f"Total delay is: {delay} time slots.")
-    return
+    return (my_route,)
 
 
 @app.cell(hide_code=True)
@@ -254,8 +257,113 @@ def _(mo):
 
 
 @app.cell
+def _(all_delays):
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    sns.histplot(all_delays, ax=ax, discrete=True, binwidth=1)
+    ax.set_xlabel("End-to-end delay (time slots)")
+    ax.set_ylabel("Number of schedules")
+    ax.set_title("Distribution of TDMA delays for route N1 → N10")
+
+    min_val = int(min(all_delays))
+    max_val = int(max(all_delays))
+    ax.set_xticks(np.arange(min_val, max_val + 1))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Validate a Custom Schedule
+
+    Below you can define any schedule where each node may occupy **one or more** time slots.
+    The validator checks whether any two conflicting nodes (within 2 hops of each other)
+    share a time slot — if so, the schedule is invalid.
+
+    Edit `checked_schedule` to test your own assignment.
+    """)
+    return
+
+
+@app.cell
+def _(conflict, get_path_delay, mo, my_route):
+    checked_schedule = {
+        1:  [1],
+        2:  [2],
+        3:  [3, 5, 6],
+        4:  [4, 7],
+        5:  [1, 2],
+        6:  [5],
+        7:  [3, 4],
+        8:  [6],
+        9:  [7],
+        10: [1, 2, 3, 4, 6],
+    }
+
+    checked_schedule = {
+        1:  [1],
+        2:  [2],
+        3:  [3],
+        4:  [1],
+        5:  [2],
+        6:  [3],
+        7:  [1],
+        8:  [1],
+        9:  [2],
+        10: [1],
+    }
+
+    def validate_schedule(schedule, conflict_graph):
+        """Return (is_valid, violations) for a multi-slot TDMA schedule.
+
+        violations is a list of (node_a, node_b, shared_slots) tuples for every
+        conflicting pair that shares at least one time slot.
+        """
+        violations = []
+        checked_pairs = set()
+        for node, slots in schedule.items():
+            for conflicting_node in conflict_graph[node]:
+                if conflicting_node not in schedule:
+                    continue
+                pair = (min(node, conflicting_node), max(node, conflicting_node))
+                if pair in checked_pairs:
+                    continue
+                checked_pairs.add(pair)
+                shared = set(slots) & set(schedule[conflicting_node])
+                if shared:
+                    violations.append((node, conflicting_node, sorted(shared)))
+        return len(violations) == 0, violations
+
+    _is_valid, _violations = validate_schedule(checked_schedule, conflict)
+
+    _route_delay = get_path_delay(
+        {node: slots[0] for node, slots in checked_schedule.items()},
+        my_route,
+        L=max(max(s) for s in checked_schedule.values()),
+    )
+
+    if _is_valid:
+        _output = mo.callout(
+            mo.md(f"**Valid schedule!** No conflicting nodes share a time slot. "
+                  f"End-to-end delay N1 → N10 (first slot per node): **{_route_delay} time slots**."),
+            kind="success",
+        )
+    else:
+        _lines = [
+            f"- **N{u}** and **N{v}** conflict on slot(s): {slots}"
+            for u, v, slots in _violations
+        ]
+        _output = mo.callout(
+            mo.md("**Invalid schedule!** The following conflicts were found:\n\n" + "\n".join(_lines)),
+            kind="danger",
+        )
+    _output
+    return
+
+
+@app.cell
 def _():
-    # TODO
     return
 
 
