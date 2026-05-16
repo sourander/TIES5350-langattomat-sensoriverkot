@@ -74,3 +74,11 @@ open module_name:
         echo "Error: PDF not found at $PDF_PATH"
         exit 1
     fi
+
+convert-images module_name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd "{{module_name}}/report/images"
+    # Use mogrify to convert all .png images to .pdf
+    mkdir -p pdf
+    mogrify -format pdf -path pdf raw/*.*
